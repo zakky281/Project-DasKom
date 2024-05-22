@@ -5,10 +5,19 @@
 #define MAX_ROOMS 100
 #define MAX_CUSTOMERS 100
 #define MAX_NAME_LEN 50
-#define PRICE_PER_NIGHT 100 // Harga per malam dalam satuan mata uang yang relevan
+#define DELUXE_PRICE 1000000
+#define EXECUTIVE_PRICE 3000000
+#define PRESIDENTIAL_PRICE 20000000
+
+typedef enum {
+    DELUXE,
+    EXECUTIVE,
+    PRESIDENTIAL
+} RoomType;
 
 typedef struct {
     int roomNumber;
+    RoomType type;
     int isAvailable;
 } Room;
 
@@ -19,6 +28,7 @@ typedef struct {
     int nights;
     int numberOfGuests;
     float totalBill;
+    RoomType roomType;
 } Customer;
 
 Room rooms[MAX_ROOMS];
@@ -26,9 +36,30 @@ Customer customers[MAX_CUSTOMERS];
 int currentCustomers = 0;
 
 void initializeRooms() {
-    for (int i = 0; i < MAX_ROOMS; i++) {
+    int i;
+    for (i = 0; i < 70; i++) {
         rooms[i].roomNumber = i + 1;
-        rooms[i].isAvailable = 1; // Semua kamar tersedia awalnya
+        rooms[i].type = DELUXE;
+        rooms[i].isAvailable = 1;
+    }
+    for (; i < 95; i++) {
+        rooms[i].roomNumber = i + 1;
+        rooms[i].type = EXECUTIVE;
+        rooms[i].isAvailable = 1;
+    }
+    for (; i < MAX_ROOMS; i++) {
+        rooms[i].roomNumber = i + 1;
+        rooms[i].type = PRESIDENTIAL;
+        rooms[i].isAvailable = 1;
+    }
+}
+
+float getRoomPrice(RoomType type) {
+    switch (type) {
+        case DELUXE: return DELUXE_PRICE;
+        case EXECUTIVE: return EXECUTIVE_PRICE;
+        case PRESIDENTIAL: return PRESIDENTIAL_PRICE;
+        default: return 0;
     }
 }
 
@@ -46,12 +77,14 @@ void addCustomer(char *name, char *email, int roomNumber, int nights, int number
         return;
     }
     rooms[roomNumber - 1].isAvailable = 0;
+    RoomType roomType = rooms[roomNumber - 1].type;
     strcpy(customers[currentCustomers].name, name);
     strcpy(customers[currentCustomers].email, email);
     customers[currentCustomers].roomNumber = roomNumber;
     customers[currentCustomers].nights = nights;
     customers[currentCustomers].numberOfGuests = numberOfGuests;
-    customers[currentCustomers].totalBill = nights * PRICE_PER_NIGHT;
+    customers[currentCustomers].roomType = roomType;
+    customers[currentCustomers].totalBill = nights * getRoomPrice(roomType);
     currentCustomers++;
     printf("Pelanggan berhasil ditambahkan!\n");
 }
@@ -59,7 +92,7 @@ void addCustomer(char *name, char *email, int roomNumber, int nights, int number
 void checkOutCustomer(int roomNumber) {
     for (int i = 0; i < currentCustomers; i++) {
         if (customers[i].roomNumber == roomNumber) {
-            printf("Total tagihan untuk kamar %d: %.2f\n", roomNumber, customers[i].totalBill);
+            printf("Total tagihan untuk kamar %d: %.2f juta rupiah\n", roomNumber, customers[i].totalBill / 1000000);
             rooms[roomNumber - 1].isAvailable = 1;
             for (int j = i; j < currentCustomers - 1; j++) {
                 customers[j] = customers[j + 1];
@@ -76,7 +109,9 @@ void listAvailableRooms() {
     printf("Kamar yang tersedia:\n");
     for (int i = 0; i < MAX_ROOMS; i++) {
         if (rooms[i].isAvailable) {
-            printf("Kamar %d\n", rooms[i].roomNumber);
+            printf("Kamar %d (%s)\n", rooms[i].roomNumber, 
+                   rooms[i].type == DELUXE ? "Deluxe" :
+                   rooms[i].type == EXECUTIVE ? "Executive" : "Presidential");
         }
     }
 }
@@ -84,9 +119,11 @@ void listAvailableRooms() {
 void listCustomers() {
     printf("Pelanggan saat ini:\n");
     for (int i = 0; i < currentCustomers; i++) {
-        printf("Nama: %s, Email: %s, Kamar: %d, Malam: %d, Jumlah Tamu: %d, Tagihan: %.2f\n",
+        printf("Nama: %s, Email: %s, Kamar: %d (%s), Malam: %d, Jumlah Tamu: %d, Tagihan: %.2f juta rupiah\n",
                customers[i].name, customers[i].email, customers[i].roomNumber,
-               customers[i].nights, customers[i].numberOfGuests, customers[i].totalBill);
+               customers[i].roomType == DELUXE ? "Deluxe" :
+               customers[i].roomType == EXECUTIVE ? "Executive" : "Presidential",
+               customers[i].nights, customers[i].numberOfGuests, customers[i].totalBill / 1000000);
     }
 }
 
