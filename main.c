@@ -63,6 +63,24 @@ float getRoomPrice(RoomType type) {
     }
 }
 
+const char* getRoomTypeName(RoomType type) {
+    switch (type) {
+        case DELUXE: return "Deluxe";
+        case EXECUTIVE: return "Executive";
+        case PRESIDENTIAL: return "Presidential";
+        default: return "Unknown";
+    }
+}
+
+void listAvailableRoomsByType(RoomType type) {
+    printf("Kamar yang tersedia (%s):\n", getRoomTypeName(type));
+    for (int i = 0; i < MAX_ROOMS; i++) {
+        if (rooms[i].isAvailable && rooms[i].type == type) {
+            printf("Kamar %d\n", rooms[i].roomNumber);
+        }
+    }
+}
+
 void addCustomer(char *name, char *email, int roomNumber, int nights, int numberOfGuests) {
     if (currentCustomers >= MAX_CUSTOMERS) {
         printf("Batas pelanggan tercapai!\n");
@@ -121,8 +139,7 @@ void listCustomers() {
     for (int i = 0; i < currentCustomers; i++) {
         printf("Nama: %s, Email: %s, Kamar: %d (%s), Malam: %d, Jumlah Tamu: %d, Tagihan: %.2f juta rupiah\n",
                customers[i].name, customers[i].email, customers[i].roomNumber,
-               customers[i].roomType == DELUXE ? "Deluxe" :
-               customers[i].roomType == EXECUTIVE ? "Executive" : "Presidential",
+               getRoomTypeName(customers[i].roomType),
                customers[i].nights, customers[i].numberOfGuests, customers[i].totalBill / 1000000);
     }
 }
@@ -135,6 +152,25 @@ void helpMenu() {
     printf("4. Daftar Pelanggan Saat Ini - Menampilkan daftar semua pelanggan yang sedang menginap.\n");
     printf("5. Bantuan - Menampilkan menu bantuan ini.\n");
     printf("6. Keluar - Keluar dari program.\n");
+}
+
+int selectRoomType() {
+    int roomType;
+    printf("Pilih tipe kamar:\n");
+    printf("1. Deluxe\n");
+    printf("2. Executive\n");
+    printf("3. Presidential\n");
+    printf("Masukkan pilihan Anda: ");
+    scanf("%d", &roomType);
+    return roomType - 1; // Mengurangi 1 untuk menyesuaikan dengan enum RoomType
+}
+
+int selectRoom(RoomType roomType) {
+    int roomNumber;
+    listAvailableRoomsByType(roomType);
+    printf("Masukkan nomor kamar yang dipilih: ");
+    scanf("%d", &roomNumber);
+    return roomNumber;
 }
 
 int main() {
@@ -155,16 +191,24 @@ int main() {
 
         switch (choice) {
             case 1:
+                printf("Masukkan jumlah tamu (maks 2): ");
+                scanf("%d", &numberOfGuests);
+                if (numberOfGuests > 2) {
+                    printf("Jumlah tamu per kamar tidak boleh lebih dari 2!\n");
+                    break;
+                }
                 printf("Masukkan nama pelanggan: ");
                 scanf("%s", name);
                 printf("Masukkan email pelanggan: ");
                 scanf("%s", email);
-                printf("Masukkan nomor kamar: ");
-                scanf("%d", &roomNumber);
+                int roomType = selectRoomType();
+                if (roomType < 0 || roomType > 2) {
+                    printf("Pilihan tipe kamar tidak valid!\n");
+                    break;
+                }
+                roomNumber = selectRoom((RoomType)roomType);
                 printf("Masukkan jumlah malam menginap: ");
                 scanf("%d", &nights);
-                printf("Masukkan jumlah tamu (maks 2): ");
-                scanf("%d", &numberOfGuests);
                 addCustomer(name, email, roomNumber, nights, numberOfGuests);
                 break;
             case 2:
