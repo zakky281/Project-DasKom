@@ -115,13 +115,20 @@ void checkOutCustomer(int roomNumber) {
             printf("Jumlah Malam: %d\n", customers[i].nights);
             printf("Tagihan: %.2f juta rupiah\n", customers[i].totalBill / 1000000);
 
-            printf("Melanjutkan proses check-out...\n");
-            rooms[roomNumber - 1].isAvailable = 1;
-            for (int j = i; j < currentCustomers - 1; j++) {
-                customers[j] = customers[j + 1];
+            char confirmation;
+            printf("Apakah Anda yakin ingin melanjutkan check-out? (y/n): ");
+            scanf(" %c", &confirmation); // Note the space before %c to skip any leading whitespace
+            if (confirmation == 'y' || confirmation == 'Y') {
+                printf("Melanjutkan proses check-out...\n");
+                rooms[roomNumber - 1].isAvailable = 1;
+                for (int j = i; j < currentCustomers - 1; j++) {
+                    customers[j] = customers[j + 1];
+                }
+                currentCustomers--;
+                printf("Pelanggan berhasil check-out!\n");
+            } else {
+                printf("Check-out dibatalkan.\n");
             }
-            currentCustomers--;
-            printf("Pelanggan berhasil check-out!\n");
             return;
         }
     }
