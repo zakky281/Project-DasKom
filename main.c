@@ -17,6 +17,7 @@ typedef struct {
     char email[MAX_NAME_LEN];
     int roomNumber;
     int nights;
+    int numberOfGuests;
     float totalBill;
 } Customer;
 
@@ -31,7 +32,7 @@ void initializeRooms() {
     }
 }
 
-void addCustomer(char *name, char *email, int roomNumber, int nights) {
+void addCustomer(char *name, char *email, int roomNumber, int nights, int numberOfGuests) {
     if (currentCustomers >= MAX_CUSTOMERS) {
         printf("Batas pelanggan tercapai!\n");
         return;
@@ -40,11 +41,16 @@ void addCustomer(char *name, char *email, int roomNumber, int nights) {
         printf("Nomor kamar tidak valid atau kamar tidak tersedia!\n");
         return;
     }
+    if (numberOfGuests > 2) {
+        printf("Jumlah tamu per kamar tidak boleh lebih dari 2!\n");
+        return;
+    }
     rooms[roomNumber - 1].isAvailable = 0;
     strcpy(customers[currentCustomers].name, name);
     strcpy(customers[currentCustomers].email, email);
     customers[currentCustomers].roomNumber = roomNumber;
     customers[currentCustomers].nights = nights;
+    customers[currentCustomers].numberOfGuests = numberOfGuests;
     customers[currentCustomers].totalBill = nights * PRICE_PER_NIGHT;
     currentCustomers++;
     printf("Pelanggan berhasil ditambahkan!\n");
@@ -78,9 +84,9 @@ void listAvailableRooms() {
 void listCustomers() {
     printf("Pelanggan saat ini:\n");
     for (int i = 0; i < currentCustomers; i++) {
-        printf("Nama: %s, Email: %s, Kamar: %d, Malam: %d, Tagihan: %.2f\n",
+        printf("Nama: %s, Email: %s, Kamar: %d, Malam: %d, Jumlah Tamu: %d, Tagihan: %.2f\n",
                customers[i].name, customers[i].email, customers[i].roomNumber,
-               customers[i].nights, customers[i].totalBill);
+               customers[i].nights, customers[i].numberOfGuests, customers[i].totalBill);
     }
 }
 
@@ -96,7 +102,7 @@ void helpMenu() {
 
 int main() {
     initializeRooms();
-    int choice, roomNumber, nights;
+    int choice, roomNumber, nights, numberOfGuests;
     char name[MAX_NAME_LEN], email[MAX_NAME_LEN];
 
     while (1) {
@@ -120,7 +126,9 @@ int main() {
                 scanf("%d", &roomNumber);
                 printf("Masukkan jumlah malam menginap: ");
                 scanf("%d", &nights);
-                addCustomer(name, email, roomNumber, nights);
+                printf("Masukkan jumlah tamu (maks 2): ");
+                scanf("%d", &numberOfGuests);
+                addCustomer(name, email, roomNumber, nights, numberOfGuests);
                 break;
             case 2:
                 printf("Masukkan nomor kamar: ");
