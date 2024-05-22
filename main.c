@@ -110,7 +110,12 @@ void addCustomer(char *name, char *email, int roomNumber, int nights, int number
 void checkOutCustomer(int roomNumber) {
     for (int i = 0; i < currentCustomers; i++) {
         if (customers[i].roomNumber == roomNumber) {
-            printf("Total tagihan untuk kamar %d: %.2f juta rupiah\n", roomNumber, customers[i].totalBill / 1000000);
+            printf("Informasi Pelanggan:\n");
+            printf("Nama: %s\n", customers[i].name);
+            printf("Jumlah Malam: %d\n", customers[i].nights);
+            printf("Tagihan: %.2f juta rupiah\n", customers[i].totalBill / 1000000);
+
+            printf("Melanjutkan proses check-out...\n");
             rooms[roomNumber - 1].isAvailable = 1;
             for (int j = i; j < currentCustomers - 1; j++) {
                 customers[j] = customers[j + 1];
