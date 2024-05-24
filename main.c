@@ -96,8 +96,8 @@ void addCustomer(char *name, char *email, int roomNumber, int nights, int number
     }
     rooms[roomNumber - 1].isAvailable = 0;
     RoomType roomType = rooms[roomNumber - 1].type;
-    strcpy(customers[currentCustomers].name, name);
-    strcpy(customers[currentCustomers].email, email);
+    strncpy(customers[currentCustomers].name, name, MAX_NAME_LEN);
+    strncpy(customers[currentCustomers].email, email, MAX_NAME_LEN);
     customers[currentCustomers].roomNumber = roomNumber;
     customers[currentCustomers].nights = nights;
     customers[currentCustomers].numberOfGuests = numberOfGuests;
@@ -209,10 +209,13 @@ int main() {
                     printf("Jumlah tamu per kamar tidak boleh lebih dari 2!\n");
                     break;
                 }
+                getchar(); // Clear the newline character left by scanf
                 printf("Masukkan nama pelanggan: ");
-                scanf("%s", name);
+                fgets(name, MAX_NAME_LEN, stdin);
+                name[strcspn(name, "\n")] = 0; // Remove newline character if present
                 printf("Masukkan email pelanggan: ");
-                scanf("%s", email);
+                fgets(email, MAX_NAME_LEN, stdin);
+                email[strcspn(email, "\n")] = 0; // Remove newline character if present
                 int roomType = selectRoomType();
                 if (roomType < 0 || roomType > 2) {
                     printf("Pilihan tipe kamar tidak valid!\n");
