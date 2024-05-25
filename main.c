@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Definisikan konstanta dan tipe data
+// Mendefinisikan konstanta dan tipe data
 #define MAKS_KAMAR 100
 #define MAKS_PELANGGAN 100
 #define MAKS_PANJANG_NAMA 50
@@ -10,21 +10,21 @@
 #define HARGA_EXECUTIVE 3000000
 #define HARGA_PRESIDENTIAL 20000000
 
-// Definisikan tipe enum untuk jenis kamar
+// Mendefinisikan tipe enum untuk jenis kamar
 typedef enum {
     DELUXE,
     EXECUTIVE,
     PRESIDENTIAL
 } TipeKamar;
 
-// Struktur untuk menyimpan informasi kamar
+// Struct untuk menyimpan informasi kamar
 typedef struct {
     int nomorKamar;
     TipeKamar tipe;
     int tersedia;
 } Kamar;
 
-// Struktur untuk menyimpan informasi pelanggan
+// Struct untuk menyimpan informasi pelanggan
 typedef struct {
     char nama[MAKS_PANJANG_NAMA];
     char email[MAKS_PANJANG_NAMA];
@@ -35,7 +35,7 @@ typedef struct {
     TipeKamar tipeKamar;
 } Pelanggan;
 
-// Deklarasi array untuk menyimpan data kamar dan pelanggan
+// Mendeklarasi array untuk menyimpan data kamar dan pelanggan
 Kamar kamar[MAKS_KAMAR];
 Pelanggan pelanggan[MAKS_PELANGGAN];
 int jumlahPelangganSaatIni = 0;
@@ -113,7 +113,7 @@ void tambahkanPelanggan(char *nama, char *email, int nomorKamar, int malam, int 
     // Tandai kamar sebagai tidak tersedia
     kamar[nomorKamar - 1].tersedia = 0;
     TipeKamar tipeKamar = kamar[nomorKamar - 1].tipe;
-    // Salin informasi pelanggan ke struktur pelanggan
+    // Salin informasi pelanggan ke Struct pelanggan
     strncpy(pelanggan[jumlahPelangganSaatIni].nama, nama, MAKS_PANJANG_NAMA);
     strncpy(pelanggan[jumlahPelangganSaatIni].email, email, MAKS_PANJANG_NAMA);
     pelanggan[jumlahPelangganSaatIni].nomorKamar = nomorKamar;
