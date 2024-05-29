@@ -4,7 +4,7 @@
 
 // Mendefinisikan konstanta dan tipe data
 #define MAKS_KAMAR 100
-#define MAKS_PELANGGAN 100
+#define MAKS_TAMU 100
 #define MAKS_PANJANG_NAMA 50
 #define HARGA_DELUXE 1000000
 #define HARGA_EXECUTIVE 3000000
@@ -24,21 +24,21 @@ typedef struct {
     int tersedia;
 } Kamar;
 
-// Struct untuk menyimpan informasi pelanggan
+// Struct untuk menyimpan informasi tamu
 typedef struct {
     char nama[MAKS_PANJANG_NAMA];
     char email[MAKS_PANJANG_NAMA];
     int nomorKamar;
     int malam;
     int jumlahTamu;
-    float totalTagihan;
+    int totalTagihan;
     TipeKamar tipeKamar;
-} Pelanggan;
+} Tamu;
 
-// Mendeklarasi array untuk menyimpan data kamar dan pelanggan
+// Mendeklarasi array untuk menyimpan data kamar dan tamu
 Kamar kamar[MAKS_KAMAR];
-Pelanggan pelanggan[MAKS_PELANGGAN];
-int jumlahPelangganSaatIni = 0;
+Tamu tamu[MAKS_TAMU];
+int jumlahTamuSaatIni = 0;
 
 // Inisialisasi kamar
 void inisialisasiKamar() {
@@ -64,7 +64,7 @@ void inisialisasiKamar() {
 }
 
 // Fungsi untuk mendapatkan harga kamar berdasarkan tipe
-float dapatkanHargaKamar(TipeKamar tipe) {
+int dapatkanHargaKamar(TipeKamar tipe) {
     switch (tipe) {
         case DELUXE: return HARGA_DELUXE;
         case EXECUTIVE: return HARGA_EXECUTIVE;
@@ -93,11 +93,11 @@ void daftarKamarTersediaBerdasarkanTipe(TipeKamar tipe) {
     }
 }
 
-// Fungsi untuk menambahkan pelanggan baru
-void tambahkanPelanggan(char *nama, char *email, int nomorKamar, int malam, int jumlahTamu) {
-    // Periksa apakah jumlah pelanggan sudah mencapai batas
-    if (jumlahPelangganSaatIni >= MAKS_PELANGGAN) {
-        printf("Batas pelanggan tercapai!\n");
+// Fungsi untuk menambahkan tamu baru
+void tambahkanTamu(char *nama, char *email, int nomorKamar, int malam, int jumlahTamu) {
+    // Periksa apakah jumlah tamu sudah mencapai batas
+    if (jumlahTamuSaatIni >= MAKS_TAMU) {
+        printf("Batas tamu tercapai!\n");
         return;
     }
     // Periksa validitas nomor kamar dan ketersediaannya
@@ -113,28 +113,28 @@ void tambahkanPelanggan(char *nama, char *email, int nomorKamar, int malam, int 
     // Tandai kamar sebagai tidak tersedia
     kamar[nomorKamar - 1].tersedia = 0;
     TipeKamar tipeKamar = kamar[nomorKamar - 1].tipe;
-    // Salin informasi pelanggan ke Struct pelanggan
-    strncpy(pelanggan[jumlahPelangganSaatIni].nama, nama, MAKS_PANJANG_NAMA);
-    strncpy(pelanggan[jumlahPelangganSaatIni].email, email, MAKS_PANJANG_NAMA);
-    pelanggan[jumlahPelangganSaatIni].nomorKamar = nomorKamar;
-    pelanggan[jumlahPelangganSaatIni].malam = malam;
-    pelanggan[jumlahPelangganSaatIni].jumlahTamu = jumlahTamu;
-    pelanggan[jumlahPelangganSaatIni].tipeKamar = tipeKamar;
-    pelanggan[jumlahPelangganSaatIni].totalTagihan = malam * dapatkanHargaKamar(tipeKamar);
-    // Tambahkan pelanggan ke dalam daftar pelanggan
-    jumlahPelangganSaatIni++;
-    printf("Pelanggan berhasil ditambahkan!\n");
+    // Salin informasi tamu ke Struct tamu
+    strncpy(tamu[jumlahTamuSaatIni].nama, nama, MAKS_PANJANG_NAMA);
+    strncpy(tamu[jumlahTamuSaatIni].email, email, MAKS_PANJANG_NAMA);
+    tamu[jumlahTamuSaatIni].nomorKamar = nomorKamar;
+    tamu[jumlahTamuSaatIni].malam = malam;
+    tamu[jumlahTamuSaatIni].jumlahTamu = jumlahTamu;
+    tamu[jumlahTamuSaatIni].tipeKamar = tipeKamar;
+    tamu[jumlahTamuSaatIni].totalTagihan = malam * dapatkanHargaKamar(tipeKamar);
+    // Tambahkan tamu ke dalam daftar tamu
+    jumlahTamuSaatIni++;
+    printf("Tamu berhasil ditambahkan!\n");
 }
 
-// Fungsi untuk check-out pelanggan
-void checkOutPelanggan(int nomorKamar) {
-    for (int i = 0; i < jumlahPelangganSaatIni; i++) {
-        if (pelanggan[i].nomorKamar == nomorKamar) {
-            // Tampilkan informasi pelanggan untuk konfirmasi
-            printf("Informasi Pelanggan:\n");
-            printf("Nama: %s\n", pelanggan[i].nama);
-            printf("Jumlah Malam: %d\n", pelanggan[i].malam);
-            printf("Tagihan: %.2f juta rupiah\n", pelanggan[i].totalTagihan / 1000000);
+// Fungsi untuk check-out tamu
+void checkOutTamu(int nomorKamar) {
+    for (int i = 0; i < jumlahTamuSaatIni; i++) {
+        if (tamu[i].nomorKamar == nomorKamar) {
+            // Tampilkan informasi tamu untuk konfirmasi
+            printf("Informasi Tamu:\n");
+            printf("Nama: %s\n", tamu[i].nama);
+            printf("Jumlah Malam: %d\n", tamu[i].malam);
+            printf("Tagihan: %d juta rupiah\n", tamu[i].totalTagihan / 1000000);
 
             // Minta konfirmasi dari pengguna
             char konfirmasi;
@@ -143,19 +143,19 @@ void checkOutPelanggan(int nomorKamar) {
             if (konfirmasi == 'y' || konfirmasi == 'Y') {
                 printf("Melanjutkan proses check-out...\n");
                 kamar[nomorKamar - 1].tersedia = 1;
-                // Hapus pelanggan dari daftar
-                for (int j = i; j < jumlahPelangganSaatIni - 1; j++) {
-                    pelanggan[j] = pelanggan[j + 1];
+                // Hapus tamu dari daftar
+                for (int j = i; j < jumlahTamuSaatIni - 1; j++) {
+                    tamu[j] = tamu[j + 1];
                 }
-                jumlahPelangganSaatIni--;
-                printf("Pelanggan berhasil check-out!\n");
+                jumlahTamuSaatIni--;
+                printf("Tamu berhasil check-out!\n");
             } else {
                 printf("Check-out dibatalkan.\n");
             }
             return;
         }
     }
-    printf("Tidak ada pelanggan di kamar %d\n", nomorKamar);
+    printf("Tidak ada tamu di kamar %d\n", nomorKamar);
 }
 
 // Fungsi untuk menampilkan daftar kamar yang tersedia
@@ -170,24 +170,24 @@ void daftarKamarTersedia() {
     }
 }
 
-// Fungsi untuk menampilkan daftar pelanggan saat ini
-void daftarPelangganSaatIni() {
-    printf("Pelanggan saat ini:\n");
-    for (int i = 0; i < jumlahPelangganSaatIni; i++) {
-        printf("Nama: %s, Email: %s, Kamar: %d (%s), Malam: %d, Jumlah Tamu: %d, Tagihan: %.2f juta rupiah\n",
-               pelanggan[i].nama, pelanggan[i].email, pelanggan[i].nomorKamar,
-               dapatkanNamaTipeKamar(pelanggan[i].tipeKamar),
-               pelanggan[i].malam, pelanggan[i].jumlahTamu, pelanggan[i].totalTagihan / 1000000);
+// Fungsi untuk menampilkan daftar tamu saat ini
+void daftarTamuSaatIni() {
+    printf("Tamu saat ini:\n");
+    for (int i = 0; i < jumlahTamuSaatIni; i++) {
+        printf("Nama: %s, Email: %s, Kamar: %d (%s), Malam: %d, Jumlah Tamu: %d, Tagihan: %d juta rupiah\n",
+               tamu[i].nama, tamu[i].email, tamu[i].nomorKamar,
+               dapatkanNamaTipeKamar(tamu[i].tipeKamar),
+               tamu[i].malam, tamu[i].jumlahTamu, tamu[i].totalTagihan / 1000000);
     }
 }
 
 // Fungsi untuk menampilkan menu bantuan
 void menuBantuan() {
     printf("Menu Bantuan - Fitur Program:\n");
-    printf("1. Tambah Pelanggan - Menambahkan pelanggan baru ke dalam sistem.\n");
-    printf("2. Check-Out Pelanggan - Mengeluarkan pelanggan dan menyelesaikan tagihan.\n");
+    printf("1. Tambah Tamu - Menambahkan tamu baru ke dalam sistem.\n");
+    printf("2. Check-Out Tamu - Mengeluarkan tamu dan menyelesaikan tagihan.\n");
     printf("3. Daftar Kamar Tersedia - Menampilkan semua kamar yang tersedia.\n");
-    printf("4. Daftar Pelanggan Saat Ini - Menampilkan daftar semua pelanggan yang sedang menginap.\n");
+    printf("4. Daftar Tamu Saat Ini - Menampilkan daftar semua tamu yang sedang menginap.\n");
     printf("5. Bantuan - Menampilkan menu bantuan ini.\n");
     printf("6. Keluar - Keluar dari program.\n");
 }
@@ -222,10 +222,10 @@ int main() {
     while (1) {
         // Tampilkan menu utama
         printf("\nSistem Manajemen Hotel\n");
-        printf("1. Tambah Pelanggan\n");
-        printf("2. Check-Out Pelanggan\n");
+        printf("1. Tambah Tamu\n");
+        printf("2. Check-Out Tamu\n");
         printf("3. Daftar Kamar Tersedia\n");
-        printf("4. Daftar Pelanggan Saat Ini\n");
+        printf("4. Daftar Tamu Saat Ini\n");
         printf("5. Bantuan\n");
         printf("6. Keluar\n");
         printf("Masukkan pilihan Anda: ");
@@ -233,7 +233,7 @@ int main() {
 
         switch (pilihan) {
             case 1:
-                // Tambah pelanggan
+                // Tambah tamu
                 printf("Masukkan jumlah tamu (maks 2): ");
                 scanf("%d", &jumlahTamu);
                 if (jumlahTamu > 2) {
@@ -241,10 +241,10 @@ int main() {
                     break;
                 }
                 getchar(); // Bersihkan karakter newline dari buffer
-                printf("Masukkan nama pelanggan: ");
+                printf("Masukkan nama tamu: ");
                 fgets(nama, MAKS_PANJANG_NAMA, stdin);
                 nama[strcspn(nama, "\n")] = 0; // Hapus karakter newline jika ada
-                printf("Masukkan email pelanggan: ");
+                printf("Masukkan email tamu: ");
                 fgets(email, MAKS_PANJANG_NAMA, stdin);
                 email[strcspn(email, "\n")] = 0; // Hapus karakter newline jika ada
                 int tipeKamar = pilihTipeKamar();
@@ -255,21 +255,21 @@ int main() {
                 nomorKamar = pilihNomorKamar((TipeKamar)tipeKamar);
                 printf("Masukkan jumlah malam menginap: ");
                 scanf("%d", &malam);
-                tambahkanPelanggan(nama, email, nomorKamar, malam, jumlahTamu);
+                tambahkanTamu(nama, email, nomorKamar, malam, jumlahTamu);
                 break;
             case 2:
-                // Check-out pelanggan
+                // Check-out tamu
                 printf("Masukkan nomor kamar: ");
                 scanf("%d", &nomorKamar);
-                checkOutPelanggan(nomorKamar);
+                checkOutTamu(nomorKamar);
                 break;
             case 3:
                 // Daftar kamar yang tersedia
                 daftarKamarTersedia();
                 break;
             case 4:
-                // Daftar pelanggan saat ini
-                daftarPelangganSaatIni();
+                // Daftar tamu saat ini
+                daftarTamuSaatIni();
                 break;
             case 5:
                 // Menu bantuan
@@ -286,3 +286,4 @@ int main() {
 
     return 0;
 }
+
